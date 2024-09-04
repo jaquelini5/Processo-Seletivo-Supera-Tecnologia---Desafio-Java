@@ -1,0 +1,73 @@
+//DESAFIO 1 
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ResistorColors {
+    // Mapeamento de dígitos para cores
+    private static final Map<Integer, String> digitToColorMap = new HashMap<>();
+    
+    static {
+        digitToColorMap.put(0, "preto");
+        digitToColorMap.put(1, "marrom");
+        digitToColorMap.put(2, "vermelho");
+        digitToColorMap.put(3, "laranja");
+        digitToColorMap.put(4, "amarelo");
+        digitToColorMap.put(5, "verde");
+        digitToColorMap.put(6, "azul");
+        digitToColorMap.put(7, "violeta");
+        digitToColorMap.put(8, "cinza");
+        digitToColorMap.put(9, "branco");
+    }
+    
+    public static String getResistorColors(String input) {
+        // Remover a palavra "ohms" e espaços
+        String value = input.replace(" ohms", "");
+        
+        int multiplier = 0;
+        String colors = "";
+        
+        // Verificar o formato da entrada e calcular o multiplicador
+        if (value.contains("k")) {
+            value = value.replace("k", "");
+            multiplier = 1;
+        } else if (value.contains("M")) {
+            value = value.replace("M", "");
+            multiplier = 2;
+        }
+        
+        // Separar a parte inteira e decimal, se houver
+        String[] parts = value.split("\\.");
+        int significantDigits;
+        
+        if (parts.length == 1) {
+            // Não há decimal
+            significantDigits = Integer.parseInt(parts[0]);
+        } else {
+            // Há decimal
+            significantDigits = Integer.parseInt(parts[0] + parts[1]);
+            multiplier -= parts[1].length(); // Ajusta o multiplicador
+        }
+        
+        // Converter os dois primeiros dígitos para as cores
+        colors += digitToColorMap.get(significantDigits / 10) + " ";
+        colors += digitToColorMap.get(significantDigits % 10) + " ";
+        
+        // Adicionar a cor do multiplicador
+        colors += digitToColorMap.get(multiplier) + " ";
+        
+        // Adicionar a banda de tolerância (dourado)
+        colors += "dourado";
+        
+        return colors;
+    }
+    
+    public static void main(String[] args) {
+        // Testes de exemplo
+        System.out.println(getResistorColors("47 ohms")); // amarelo violeta preto dourado
+        System.out.println(getResistorColors("4.7k ohms")); // amarelo violeta vermelho dourado
+        System.out.println(getResistorColors("1M ohms")); // marrom preto verde dourado
+        System.out.println(getResistorColors("10 ohms")); // marrom preto preto dourado
+        System.out.println(getResistorColors("220 ohms")); // vermelho vermelho marrom dourado
+    }
+}
